@@ -1,0 +1,25 @@
+{
+  "name": "mapa_goblab",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/leodc/map_temp.git"
+  },
+  "author": "Leonel Castañeda <leonel.castaneda@datos.mx>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/leodc/map_temp/issues"
+  },
+  "homepage": "https://github.com/leodc/map_temp#readme",
+  "dependencies": {
+    "csv-parse": "^1.2.1",
+    "express": "^4.15.4",
+    "shapefile": "^0.6.6",
+    "socket.io": "^2.0.3"
+  }
+}

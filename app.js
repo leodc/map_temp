@@ -14,21 +14,23 @@ var parse = require("csv-parse");
 app.set("port", process.env.PORT || 22322);
 app.use(express.static(path.join(__dirname, "client")));
 
+
 var data = {}
-var statesCatalog = {};
-var dataBoundingbox;
+var mapOptions = {
+    statesCatalog: {},
+    sliderTicks: ["2010", "2015"],
+    variableCatalog: [],
+    institutionsCatalog: ["Ganador"]
+};
 
 
 //sockets
 io.on("connection", function(socket){
-
-    socket.emit("statesCatalog", statesCatalog);
-    socket.emit("dataBoundingbox", dataBoundingbox);
+    socket.emit("buildMap", mapOptions);
 
     socket.on("getStateData", function(key, callback){
         callback(data[key]);
     });
-
 });
 
 var dataFile = "data/CensoEiter.csv";
@@ -53,6 +55,10 @@ var parser = parse({delimiter: ','}, function(err, csvData){
         for(var j = 0; j < headers.length; j++){
             if(headers[j].endsWith(" 2010")){
                 censoDbf[csvData[i][idIndex]].data["2010"][headers[j].substring(0, headers[j].length - yearSuffixLength)] = csvData[i][j];
+
+                if(headers[j].startsWith("Población") && mapOptions.variableCatalog.indexOf(headers[j].substring(0, headers[j].length - yearSuffixLength))<0){
+                    mapOptions.variableCatalog.push(headers[j].substring(0, headers[j].length - yearSuffixLength));
+                }
             }else if(headers[j].endsWith(" 2015")){
                 censoDbf[csvData[i][idIndex]].data["2015"][headers[j].substring(0, headers[j].length - yearSuffixLength)] = csvData[i][j];
             }else{
@@ -64,7 +70,7 @@ var parser = parse({delimiter: ','}, function(err, csvData){
     // shapefile
     var feature, censoFeature, properties, dataID, stateID;
     shapefile.read("data/Municipios_2010_5A_4326.shp").then(function(dataShapefile){
-        dataBoundingbox = dataShapefile.bbox;
+        mapOptions.bb = dataShapefile.bbox;
 
         for(var i = 0; i < dataShapefile.features.length; i++){
             feature = dataShapefile.features[i];
@@ -73,8 +79,8 @@ var parser = parse({delimiter: ','}, function(err, csvData){
 
             feature.properties = censoDbf[dataID];
 
-            if(!statesCatalog[stateID]){
-                statesCatalog[stateID] = feature.properties.NOM_ENT;
+            if(!mapOptions.statesCatalog[stateID]){
+                mapOptions.statesCatalog[stateID] = feature.properties.NOM_ENT;
             }
 
             if(!data[stateID]){
@@ -84,8 +90,6 @@ var parser = parse({delimiter: ','}, function(err, csvData){
             data[stateID][dataID] = feature;
         }
 
-        //TODO order catalogs
-        
         console.log("data parsed correctly, ready to listen.");
         startServer();
     }).catch(function(err){

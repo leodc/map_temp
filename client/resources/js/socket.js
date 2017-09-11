@@ -12,3 +12,7 @@ socket.on("dataBoundingbox", function(bb){
 function getFeatureData(key, callback){
     socket.emit("getStateData", key, callback);
 }
+
+socket.on("buildMap", function(options){
+    window.buildMap("map",options);
+});

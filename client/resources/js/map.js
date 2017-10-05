@@ -339,13 +339,15 @@ function buildSecondaryControls(variableCatalog, institutionsCatalog){
 
         showInstitutionsChart = (e.target.value!="na");
         if(showInstitutionsChart){
-            $("#chartVariableJustice, #canvas-holder-justice").css("height", "250px");
+            $("#chartVariableJustice, #canvas-holder-justice").css("height", "150px");
         }else{
             $("#chartVariableJustice, #canvas-holder-justice").css("height", "0px");
         }
 
         updateInstitutionsChart();
     });
+    
+    $("#selectState").css("z-index","9999999999999");
 }
 
 
@@ -354,7 +356,7 @@ function buildPrimaryControl(catalog, ticks, variableCatalog, institutionsCatalo
 
     control.onAdd = function (map) {
         var html = "<div class='row'><div class='col-sm-12 col-md-12'><div class='form-group'>"
-        html += "<select id='selectState' class='selectpicker form-control' data-width='100%' data-title='Selecciona un estado para iniciar la visualización' data-live-search='true' data-dropdown-align-right='true' data-live-search-placeholder='Buscar' data-size='5'>";
+        html += "<select id='selectState' data-container='body' class='selectpicker form-control' data-width='100%' data-title='Selecciona un estado para iniciar la visualización' data-live-search='true' data-dropdown-align-right='true' data-live-search-placeholder='Buscar' data-size='5'>";
 
         for(var key in catalog){
             html += "<option value='" + key + "'>" + catalog[key] + "</option>";

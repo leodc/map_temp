@@ -4,7 +4,7 @@ function addGeoPath(){
 
   var _geojson = {
     "type": "FeatureCollection",
-    "features": Object.values(data[selectedState])
+    "features": Object.values(data[selectedState]) // selected data 
   }
 
   partidoDimension = ndx.dimension(function(d){return d.properties.data[selectedYear]["Ganador"]});

@@ -1,5 +1,5 @@
 function addSelectorGraph(){
-  partidoDimension = ndx.dimension(function(d){return d.properties.data[selectedYear]["Ganador"]});
+  var partidoDimension = ndx.dimension(function(d){return d.properties.data[selectedYear]["Ganador"]});
 
   var chart = dc.pieChart("#selectorGraph");
 
@@ -26,4 +26,5 @@ function addSelectorGraph(){
   });
 
   chart.render();
+  graphs.push(chart);
 }

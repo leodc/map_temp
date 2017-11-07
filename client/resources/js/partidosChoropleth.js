@@ -23,19 +23,15 @@ var partidosChoropleth = {
     "pan,udc" : "#BCD2EE"
 }
 
-var defaultColor = "#fff"
 
 function getPartidoColor(partido){
+  var defaultColor = "#eee";
+
   if(!partido){
     console.log("Error getting color: key is empty");
     return defaultColor;
   }
 
-  partido = String(partido);
-  if(!partidosChoropleth[partido.toLowerCase()]){
-    console.log("color not found", partido);
-    return defaultColor;
-  }
-
-  return partidosChoropleth[partido.toLowerCase()] ? partidosChoropleth[partido.toLowerCase()]:partidosChoropleth["na"];
+  partido = String(partido).toLowerCase();
+  return partidosChoropleth[partido] ? partidosChoropleth[partido]:defaultColor;
 }

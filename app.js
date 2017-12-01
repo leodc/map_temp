@@ -66,34 +66,39 @@ var parser = parse({delimiter: ','}, function(err, csvData){
     }
   }
 
+  console.log(censoDbf)
+  startServer();
+
   // shapefile
-  var feature, censoFeature, properties, dataID, stateID;
-  shapefile.read("data/Municipios_2010_5A_4326.shp").then(function(dataShapefile){
-    mapOptions.bb = dataShapefile.bbox;
-
-    for(var i = 0; i < dataShapefile.features.length; i++){
-      feature = dataShapefile.features[i];
-      stateID = feature.properties.CVE_ENT;
-      dataID = feature.properties.CVE_ENT + feature.properties.CVE_MUN;
-
-      feature.properties = censoDbf[dataID];
-
-      if(!mapOptions.statesCatalog[stateID]){
-        mapOptions.statesCatalog[stateID] = feature.properties.NOM_ENT;
-      }
-
-      if(!data[stateID]){
-        data[stateID] = {};
-      }
-
-      data[stateID][dataID] = feature;
-    }
-
-    console.log("data parsed correctly, ready to listen.");
-    startServer();
-  }).catch(function(err){
-    console.log("Ocurrio un error procesando data/Municipios_2010_5A.shp: " + err);
-  });
+  // var feature, censoFeature, properties, dataID, stateID;
+  // shapefile.read("data/Municipios_2010_5A_4326.shp").then(function(dataShapefile){
+  //   mapOptions.bb = dataShapefile.bbox;
+  //
+  //   for(var i = 0; i < dataShapefile.features.length; i++){
+  //     feature = dataShapefile.features[i];
+  //     stateID = feature.properties.CVE_ENT;
+  //     dataID = feature.properties.CVE_ENT + feature.properties.CVE_MUN;
+  //
+  //     feature.properties = censoDbf[dataID];
+  //
+  //     if(!mapOptions.statesCatalog[stateID]){
+  //       mapOptions.statesCatalog[stateID] = feature.properties.NOM_ENT;
+  //     }
+  //
+  //     if(!data[stateID]){
+  //       data[stateID] = {};
+  //     }
+  //
+  //     delete feature.geometry;
+  //
+  //     data[stateID][dataID] = feature;
+  //   }
+  //
+  //   console.log("data parsed correctly, ready to listen.");
+  //   startServer();
+  // }).catch(function(err){
+  //   console.log("Ocurrio un error procesando data/Municipios_2010_5A.shp: " + err);
+  // });
 });
 
 

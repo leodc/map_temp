@@ -1,47 +1,38 @@
 var data = {};
-var map, geojsonLayer, geojsonFeatures = [];
+var map, geojsonLayer, geojsonFeatures = [], wmsLayer;
 
 function buildMap(id, options){
   console.log("creating map", options);
 
-  var dataBounds = L.latLngBounds([[options.bb[3], options.bb[0]], [options.bb[1], options.bb[2]]]);
-
-  map = L.map(id, {
-    center: dataBounds.getCenter(),
-    zoom: 5,
-    minZoom: 5,
-    maxZoom: 18
+  wmsLayer = new ol.source.TileWMS({
+    url: 'http://localhost:8080/geoserver/cedn/wms/',
+    params: {'LAYERS': 'censo_mapa', 'TILED': false, transparent: true, format: "image/png"},
+    serverType: 'geoserver'
   });
 
-  // baselayers
-  L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png', {
-    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, &copy;<a href="https://carto.com/attribution">CARTO</a>'
-  }).addTo(map);
+  var layers = [
+    new ol.layer.Tile({
+      source: new ol.source.XYZ({
+        url:'http://{1-4}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',
+      })
+    }),
+    new ol.layer.Tile({
+      source: wmsLayer
+    })
+  ];
 
-  // data layer
-  geojsonLayer = L.geoJSON(null, {
-    style: buildStyle
-  }).bindPopup(function (layer) {
-    return "popup";
-  }).addTo(map);
-
-  // responsive
-  $(window).resize(function() {
-    map.invalidateSize();
+  map = new ol.Map({
+    layers: layers,
+    target: 'map',
+    view: new ol.View({
+      projection: 'EPSG:4326',
+      center: [-101.9563, 23.6257],
+      zoom: 5
+    })
   });
 
   map.updateView = function(){
-    console.log("Updateing map");
-    var feature = data[selectedState];
-
-    geojsonLayer.clearLayers();
-    for(var mun in feature){
-      geojsonLayer.addData(feature[mun]);
-    }
-
-    geojsonFeatures = geojsonLayer.getLayers();
-
-    map.fitBounds(geojsonLayer.getBounds());
+    wmsLayer.updateParams({cql_filter: "cve_ent='" + selectedState + "'"})
   }
 }
 

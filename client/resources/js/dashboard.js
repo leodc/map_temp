@@ -25,7 +25,6 @@ function buildSelectState(){
     selectedState = e.target.value;
     $("#title").html( $("#selectState option[value='" + e.target.value + "']").text() );
 
-    showLoadingModal();
     updateView();
 
     $(":focus").blur();
@@ -80,6 +79,10 @@ function showLoadingModal(show=true){
 
 
 function updateView(){
+  // map.updateView();
+
+  showLoadingModal();
+
   if(selectedState && !data[selectedState]){
     console.log("getting data", selectedState);
 

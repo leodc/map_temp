@@ -57,8 +57,27 @@ body{
   margin-bottom: 10px;
 }
 
+.variableBody .panel-body{
+  max-height: 300px;
+  overflow-y: scroll;
+}
 
-/*
+
+#selectorGraph{
+  position: absolute;
+  bottom: 0;
+}
+
+.ol-popup-content{
+  min-width: 310px;
+}
+
+#topGraph .x.axis text {
+    text-anchor: end !important;
+    transform: rotate(-90deg);
+    height: 0 !important;
+    width: 0;
+}
 
 .graph{
   width: 100%;
@@ -66,4 +85,6 @@ body{
   padding: 10px;
 }
 
-*/
+.reset-filters:hover{
+  cursor: pointer;
+}

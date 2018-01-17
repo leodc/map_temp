@@ -1,21 +1,41 @@
-var selectedState, selectedYear = "2010", selectedVariable = ["Población total", "Población de 0 a 14 años"];
+var selectedState, selectedYear, selectedVariable = ["POB1", "VIV35"];
+var dictionary;
 
 function initDashboard(options){
   showLoadingModal();
 
-  buildVariableMenu(options.variableCatalog);
+  selectedYear = options.sliderYears[0];
+
+  dictionary = {};
+
+  for(var option in options.variableCatalog){
+    dictionary[option.toLowerCase()] = options.variableCatalog[option];
+  }
+
+  for(var option in options.institutionsCatalog){
+    dictionary[option.toLowerCase()] = options.institutionsCatalog[option];
+  }
+
+  buildVariableMenu();
   buildMap("map", options);
   buildSelectState();
   buildSliderYear(options);
 
-  showLoadingModal(false);
+  updateView(); // start view
 }
 
-function buildVariableMenu(variableCatalog){
+function buildVariableMenu(){
+  var viviendaHtml = "";
   var html = "";
-  for(var variable of variableCatalog){
-    html += '<a class="" href="javascript:selectVariable(\'' + variable + '\')">' + variable + '</a><br>';
+  for(var key in dictionary){
+    if( key.startsWith("viv") ){
+      viviendaHtml += '<a class="" id="' + key + '" href="#" onClick="selectVariable(this.id)">' + dictionary[key] + '</a><br>';
+    }else{
+      html += '<a class="" id="' + key + '" href="#" onClick="selectVariable(this.id)">' + dictionary[key] + '</a><br>';
+    }
   }
+
+  $("#variableViviendaDropdown .panel-body").html(viviendaHtml);
   $("#variablePoblacionDropdown .panel-body").html(html);
 }
 
@@ -35,7 +55,6 @@ function buildSelectState(){
 function buildSliderYear(options){
   var min = 0;
   var max = options.sliderYears.length-1;
-  selectedYear = options.sliderYears[0];
 
   $("#sliderYear").slider({
     value: min,
@@ -45,9 +64,7 @@ function buildSliderYear(options){
     slide: function( event, ui ) {
       selectedYear = options.sliderYears[ui.value];
 
-      if(selectedState){
-        updateView();
-      }
+      updateView();
     }
   }).each(function() {
     var vals = max - min;
@@ -58,13 +75,6 @@ function buildSliderYear(options){
     }
   });
 }
-
-// called from onClick html property
-function selectVariable(variable){
-  $("#variableAccordion .panel-collapse").collapse("hide");
-  console.log(variable);
-}
-
 
 function showLoadingModal(show=true){
   if(show){
@@ -79,27 +89,25 @@ function showLoadingModal(show=true){
 
 
 function updateView(){
-  // map.updateView();
-
   showLoadingModal();
 
-  if(selectedState && !data[selectedState]){
-    console.log("getting data", selectedState);
+  var properties = "pob1,ganador,viv35,nom_mun";
 
-    window.getFeatureData(selectedState, function(feature){
-      window.addData(feature);
-      updateView();
-    });
-  }else{
-    // data exists and is ready
-    console.log("Updating view", selectedState, selectedYear);
+  map.getPropertyData(properties, {test: "test"}, function(data){
+    setData(data.features);
 
+    map.cleanFilters();
     map.updateView();
 
-    addSelectorGraph();
-    addScatterGraph();
-    // addGeoPath();
+    if(data.totalFeatures > 0){
+      buildPartidosGraph();
+      buildTopGraph();
+
+      if(selectedState){
+        buildScatterGraph();
+      }
+    }
 
     showLoadingModal(false);
-  }
+  });
 }

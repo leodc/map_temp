@@ -1,28 +1,20 @@
-function addSelectorGraph(){
-  var partidoDimension = ndx.dimension(function(d){return d.properties.data[selectedYear]["Ganador"]});
+var partidosData;
+
+function buildPartidosGraph(){
+  var partidoDimension = ndx.dimension(function(d){return d.properties["ganador"]});
 
   var chart = dc.pieChart("#selectorGraph");
 
   chart
+    .height(130)
     .dimension(partidoDimension)
     .group(partidoDimension.group())
     .colors(getPartidoColor)
+    // .radius(50)
     .legend(dc.legend());
 
   chart.on("filtered", function(chart, filter){
-    var filters  = chart.filters();
-    for(var layer of geojsonFeatures){
-      if(filters.length > 0){
-        if( filters.indexOf(layer.feature.properties.data[selectedYear]["Ganador"]) > -1 ){
-          geojsonLayer.addLayer(layer);
-        }else{
-          geojsonLayer.removeLayer(layer);
-        }
-      }else{
-        geojsonLayer.addLayer(layer);
-      }
-    }
-
+    map.filterByKey("ganador", chart.filters())
   });
 
   chart.render();

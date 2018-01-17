@@ -7,7 +7,7 @@ var partidosChoropleth = {
     "pvem" : "#458B00",
     "pna" : "#00C5CD",
     "pan" : "#27408B",
-    "apm" : "#F0E68C",
+    "apm" : "#EE5C42",
     "pan,prd,na,pebc" : " #BCD2EE",
     "pri,pt,pvem,pes" : "#EE5C42",
     "pri.pt.pvem.pna": "#EE5C42",
@@ -20,7 +20,8 @@ var partidosChoropleth = {
     "pes" : "#FFBBFF",
     "prd,pt,mc" : "#F0E68C",
     "independiente" : "#C71585",
-    "pan,udc" : "#BCD2EE"
+    "pan,udc" : "#BCD2EE",
+    "pbt": "#F0E68C"
 }
 
 

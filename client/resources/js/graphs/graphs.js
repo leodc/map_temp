@@ -1,11 +1,13 @@
 var ndx = crossfilter([]);
 var graphs = [];
 
-function addData(feature){
-  data[selectedState] = feature;
-
+function setData(features){
   ndx.remove();
-  ndx.add(Object.values(feature));
+
+  ndx = crossfilter([]);
+  ndx.add(features);
+
+  graphs = [];
 }
 
 function cleanFilters(){
